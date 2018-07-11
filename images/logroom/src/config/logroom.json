@@ -1,0 +1,17 @@
+{
+	"listen": {
+		"ws": 9861,
+		"http": 80
+	},
+	"redis": {
+		"host": "logroom-redis",
+		"port": 6379
+	},
+	"mysql": {
+		"host": "logroom-mysql",
+		"port": 3306,
+		"db": "logroom",
+		"user": "logroom",
+		"secret": "logroom"
+	}
+}

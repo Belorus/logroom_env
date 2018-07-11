@@ -1,0 +1,71 @@
+version: "3"
+
+services:
+  logroom:
+    image: logroom-server
+    container_name: logroom-server
+    build:
+      context: ./images/logroom
+    networks:
+      logroom-frontend:
+        ipv4_address: ${FRONTEND_IPV4_LOGROOM}
+      logroom-backend:
+    environment:
+      - MYSQL_LOGROOM_USER
+      - MYSQL_LOGROOM_PASSWORD
+      - MYSQL_LOGROOM_DATABASE
+    ports:
+      - "${LOCAL_LOGROOM_HTTP_PORT}:80"
+      - "${LOCAL_LOGROOM_WS_PORT}:9861"
+    command: >
+      wait-for-it -t 0 logroom-mysql:3306 --
+      wait-for-it -t 0 logroom-redis:6379 --
+      /entrypoint.sh
+    volumes:
+      - "${PATH_TO_LOGROOM_MODULE}:/opt/logRoomServer/node_modules/logroom-server"
+      - "${PATH_TO_SERVER_LOG}:/var/log/logroom"
+
+  mysql:
+    image: logroom-mysql
+    container_name: logroom-mysql
+    build:
+      context: ./images/mysql
+    networks:
+      logroom-backend:
+        ipv4_address: ${BACKEND_IPV4_MYSQL}
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+      - "MYSQL_USER=${MYSQL_LOGROOM_USER}"
+      - "MYSQL_PASSWORD=${MYSQL_LOGROOM_PASSWORD}"
+      - "MYSQL_DATABASE=${MYSQL_LOGROOM_DATABASE}"
+      - "INIT_TOKUDB=1"
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - "${PATH_TO_MYSQL_DATA}:/var/lib/mysql"
+
+  redis:
+    image: logroom-redis
+    container_name: logroom-redis
+    build:
+      context: ./images/redis
+    networks:
+      logroom-backend:
+        ipv4_address: ${BACKEND_IPV4_REDIS}
+    volumes:
+      - "${PATH_TO_REDIS_DATA}:/var/lib/redis"
+
+networks:
+  logroom-frontend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${FRONTEND_SUBNET}
+  logroom-backend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${BACKEND_SUBNET}
