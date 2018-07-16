@@ -1,5 +1,3 @@
 #!/bin/bash
 
-cd /opt/logRoomUi && npm install
-
-/usr/bin/supervisord
+cd /opt/logRoomUi && npm install && npm start
