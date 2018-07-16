@@ -6,10 +6,6 @@ services:
     container_name: logroom-server
     build:
       context: ./images/logroom
-    networks:
-      logroom-frontend:
-        ipv4_address: ${FRONTEND_IPV4_LOGROOM}
-      logroom-backend:
     environment:
       - MYSQL_LOGROOM_USER
       - MYSQL_LOGROOM_PASSWORD
@@ -30,9 +26,6 @@ services:
     container_name: logroom-mysql
     build:
       context: ./images/mysql
-    networks:
-      logroom-backend:
-        ipv4_address: ${BACKEND_IPV4_MYSQL}
     environment:
       - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
       - "MYSQL_USER=${MYSQL_LOGROOM_USER}"
@@ -50,22 +43,5 @@ services:
     container_name: logroom-redis
     build:
       context: ./images/redis
-    networks:
-      logroom-backend:
-        ipv4_address: ${BACKEND_IPV4_REDIS}
     volumes:
       - "${PATH_TO_REDIS_DATA}:/var/lib/redis"
-
-networks:
-  logroom-frontend:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${FRONTEND_SUBNET}
-  logroom-backend:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${BACKEND_SUBNET}
