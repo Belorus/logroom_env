@@ -1,0 +1,6 @@
+[submodule "images/logroom-server/src/node_modules/logroom-server"]
+	path = images/logroom-server/src/node_modules/logroom-server
+	url = git@github.com:Belorus/logroom-server.git
+[submodule "images/logroom-ui/src/logroom-ui"]
+	path = images/logroom-ui/src/logroom-ui
+	url = git@github.com:Belorus/logroom-ui.git

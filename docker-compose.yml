@@ -1,14 +1,30 @@
 version: "3"
 
 services:
-  logroom:
+  logroom-ui:
+    image: logroom-ui
+    container_name: logroom-ui
+    build:
+      context: ./images/logroom-ui
+    networks:
+      logroom-frontend:
+        ipv4_address: ${FRONTEND_IPV4_LOGROOM_UI}
+    ports:
+      - "${LOCAL_LOGROOM_UI_PORT}:9000"
+    command: >
+      wait-for-it -t 0 logroom-server:9861 --
+      /entrypoint.sh
+    volumes:
+      - "${PATH_TO_LOGROOM_LOG}:/var/log/logroom"
+
+  logroom-server:
     image: logroom-server
     container_name: logroom-server
     build:
-      context: ./images/logroom
+      context: ./images/logroom-server
     networks:
       logroom-frontend:
-        ipv4_address: ${FRONTEND_IPV4_LOGROOM}
+        ipv4_address: ${FRONTEND_IPV4_LOGROOM_SERVER}
       logroom-backend:
     environment:
       - MYSQL_LOGROOM_USER
@@ -22,8 +38,7 @@ services:
       wait-for-it -t 0 logroom-redis:6379 --
       /entrypoint.sh
     volumes:
-      - "${PATH_TO_LOGROOM_MODULE}:/opt/logRoomServer/node_modules/logroom-server"
-      - "${PATH_TO_SERVER_LOG}:/var/log/logroom"
+      - "${PATH_TO_LOGROOM_LOG}:/var/log/logroom"
 
   mysql:
     image: logroom-mysql

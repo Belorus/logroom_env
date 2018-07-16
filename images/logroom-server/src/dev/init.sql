@@ -14,4 +14,4 @@ CREATE TABLE IF NOT EXISTS `journal`(
   `log` json NOT NULL,
   KEY `session_id`(`session_id`),
   PRIMARY KEY (`id`)
-) ENGINE=TokuDB DEFAULT CHARSET=utf8;
+) ENGINE=TokuDB DEFAULT CHARSET=utf8 PARTITION BY KEY() PARTITIONS 10;
