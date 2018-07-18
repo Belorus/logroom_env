@@ -7,6 +7,7 @@
 - Clone logroom_env repository
 ```
 git clone https://github.com/Belorus/logroom_env.git && cd logroom_env
+git submodule update --init
 ```
 - Copy "**local.env**" into "**.env**".
 ```

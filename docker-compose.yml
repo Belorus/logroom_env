@@ -4,6 +4,7 @@ services:
   logroom-ui:
     image: logroom-ui
     container_name: logroom-ui
+    depends_on: [mysql, redis, logroom-server]
     build:
       context: ./images/logroom-ui
     ports:
@@ -17,6 +18,7 @@ services:
   logroom-server:
     image: logroom-server
     container_name: logroom-server
+    depends_on: [mysql, redis]
     build:
       context: ./images/logroom-server
     environment:
