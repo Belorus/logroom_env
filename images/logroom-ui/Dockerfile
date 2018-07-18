@@ -1,11 +1,13 @@
-FROM node:8.11
+FROM node:8.11 as build-env
 
-COPY ./entrypoint.sh /
+COPY . ./
+WORKDIR /src/logroom-ui/
 
-RUN apt-get update && \
-	apt-get install -y git && \
-	git clone https://github.com/vishnubob/wait-for-it.git /opt/wait-for-it && \
-	ln -s /opt/wait-for-it/wait-for-it.sh /usr/local/bin/wait-for-it && \
-	chmod +x entrypoint.sh
+RUN npm install
+RUN npm run build:prod
 
-EXPOSE 9000
+FROM nginx
+
+COPY --from=build-env /src/logroom-ui/dist /usr/share/nginx/html
+	
+EXPOSE 80
