@@ -8,7 +8,8 @@ COPY logroom-mysql-entrypoint.sh /
 
 RUN apt-get update && \
 	apt-get install sudo && \
-	chmod +x /logroom-mysql-entrypoint.sh
+	chmod +x /logroom-mysql-entrypoint.sh &&\
+        sudo chmod 777 /var/lib/mysql
 
 ENTRYPOINT ["/logroom-mysql-entrypoint.sh"]
 
